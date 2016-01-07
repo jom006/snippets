@@ -131,12 +131,6 @@ function NumberFormating($Numbers, $decimals = 2 , $decimal_sep = "," , $thousan
 
 }
 
-function IsItVeryOld($time){
-	$TwoDaysAgo = time() - (60*60*24*2);
-   if($time <= $TwoDaysAgo) return true;
-}
-
-
 function isOnline(){
     if(isset($_SESSION["UserID"])) return true;
 }
@@ -223,11 +217,14 @@ function getLimitedToken($string, $your_desired_width){
     }
 }
 
-
-
-function IsItVeryOld($time){
-    $TwoDaysAgo = time() - (60*60*24*2);
-    if($time <= $TwoDaysAgo) return true;
+ve
+/**
+ * Check if the entred page is the page name wanted, i.e: isURL("index"); will return true if user is in index.
+ * @param $filename
+ * @return bool
+ */
+function isURL($filename){
+    return $filename == str_replace(".php", "", substr(strrchr($_SERVER['PHP_SELF'],"/"), 1));
 }
 
 /* CURRENT PAGE SNIPPER
