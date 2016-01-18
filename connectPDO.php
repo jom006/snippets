@@ -1,6 +1,6 @@
 <?php
 session_start();
-//
+
 try{
     /* Instantiate new PDO object called $db
      * When doing query $db-> should be used
