@@ -1,0 +1,49 @@
+/* START: Installing new vagrant */
+1. Vagrant init
+2. Change the VagrantFile
+3. Lance: sudo apt-get update
+4. Install php et compagnie (voir en bas 1ere et 2eme étape)
+5. Change apache default: sudo nano /etc/apache2/sites-enabled/000-default.conf
+	par:
+	DocumentRoot /vagrant
+	<Directory /vagrant>
+		Options -Indexes +FollowSymLinks +MultiViews
+		AllowOverride All
+		Require all granted
+	</Directory>
+6. Restart Apache
+7. Changes host file: C:\Windows\System32\drivers\etc
+
+/* END: Installing new vagrant */
+
+#update
+sudo apt-get update
+
+# Installer php et compagnie
+sudo apt-get install mysql-server libapache2-mod-auth-mysql php5-mysql
+
+-> 2eme étape
+
+sudo apt-get install php5 libapache2-mod-php5 php5-mcrypt
+
+# Afficher les 100 dernières lignes du fichier error.log de apache
+sudo tail -n 100 /var/log/apache2/error.log
+
+# Choisir entre Start ou stop ou restart ou status de Apache
+sudo service apache2 start | stop | restart | status 
+
+-> ou
+
+sudo /etc/init.d/apache2 restart
+
+# Installer un package 
+sudo dpkg -i /chemin/paquet.deb
+
+# Installer plusieurs pachages a la fois
+sudo dpkg -i -R /chemin/*.deb
+
+# Si on install un programme et qu'il demande les dépendances on utilise
+sudo apt-get -f install
+
+#EDIT FILES:
+sudo nano /path/...
