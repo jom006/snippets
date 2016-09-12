@@ -105,7 +105,46 @@ function priceSep($num){
 }
 
 
+function ago($time, $siden=true, $removeTime=false, $reverse=false, $switch = 172800, $morgen=false){
+   $periods = array("sekunder", "minutter", "timer", "dage", "uger", "måneder", "år", "årtier");
+   $lengths = array("60","60","24","7","4.35","12","10");
 
+   $TwoDaysAgo = ($reverse)? time() + $switch : time() - $switch;
+   $removeTime = ($removeTime)? "" : " H:i";
+
+   if($reverse){
+		if($time >= $TwoDaysAgo) return date("d-m-Y{$removeTime}", $time);
+   }else{
+   		if($time <= $TwoDaysAgo) return date("d-m-Y{$removeTime}", $time);
+   }
+
+
+   $now = time();
+
+	   $difference     = ($reverse)? $time - $now : $now - $time;
+
+	   if($morgen){
+
+		   if($difference < 0) return "I dag";
+
+		   if($difference < 86400) return "I morgen";
+
+		}
+
+	   $tense         = "siden";
+
+   for($j = 0; $difference >= $lengths[$j] && $j < count($lengths)-1; $j++) {
+	   $difference /= $lengths[$j];
+   }
+
+   $difference = round($difference);
+
+   if($difference != 1) {
+	   //$periods[$j].= "s";
+   }
+	$siden = ($siden)? " siden" : "";
+   return "$difference $periods[$j]{$siden}";
+}
 
 /* to get substring if exceed Limit */
 function getLimitedToken($string, $your_desired_width){
@@ -131,8 +170,18 @@ function NumberFormating($Numbers, $decimals = 2 , $decimal_sep = "," , $thousan
 
 }
 
+function IsItVeryOld($time){
+	$TwoDaysAgo = time() - (60*60*24*2);
+   if($time <= $TwoDaysAgo) return true;
+}
+
+
 function isOnline(){
     if(isset($_SESSION["UserID"])) return true;
+}
+
+function OutputFacebookPictureLink($ID, $width = 500){
+    return "http://graph.facebook.com/{$ID}/picture?height=".$width;
 }
 
 /**
@@ -144,82 +193,27 @@ if(isOnline()){
     $LastTimeConnected->execute(array($_SESSION["UserID"]));
 }
 
-
-//SPLIT PHRASES
-function tokenTruncate($string, $your_desired_width) {
-    $parts = preg_split('/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE);
-    $parts_count = count($parts);
-
-    $length = 0;
-    $last_part = 0;
-    for (; $last_part < $parts_count; ++$last_part) {
-        $length += strlen($parts[$last_part]);
-        if ($length > $your_desired_width) { break; }
+function buildURL($data, $FullURL = 0){
+    $url_parts = parse_url("http://".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"]);
+    if(isset($url_parts['query'])){
+        parse_str($url_parts['query'], $params);
     }
 
-    $last_part = ($last_part)? $last_part : 1;
-    $last_part = implode(array_slice($parts, 0, $last_part));
-    return substr($last_part, 0, $your_desired_width);
+    foreach($data as $key => $value){
+        $params[$key] = $value;
+    }
+
+    // Note that this will url_encode all values
+    $url_parts['query'] = http_build_query($params);
+
+    if($FullURL){
+        return $url_parts['scheme'] . '://' . $url_parts['host'] . $url_parts['path'] . '?' . $url_parts['query'];
+    }
+    return '?' . $url_parts['query'];
 }
 
-function priceSep($num){
-    return "kr. ".number_format($num,null,null,".").",-";
-}
-
-function ago($time, $siden=true, $removeTime=false, $reverse=false, $switch = 172800, $morgen=false, $ServerDatabaseTimeConflict = 0){
-    $periods = array("sekunder", "minutter", "timer", "dage", "uger", "måneder", "år", "årtier");
-    $lengths = array("60","60","24","7","4.35","12","10");
-
-    $TwoDaysAgo = ($reverse)? time() + $switch : time() - $switch;
-    $removeTime = ($removeTime)? "" : " H:i";
-
-    if($reverse){
-        if($time >= $TwoDaysAgo) return date("d-m-Y{$removeTime}", $time);
-    }else{
-        if($time <= $TwoDaysAgo) return date("d-m-Y{$removeTime}", $time);
-    }
-
-
-    $now = time() + $ServerDatabaseTimeConflict;
-
-    $difference     = ($reverse)? $time - $now : $now - $time;
-
-    if($morgen){
-
-        if($difference < 0) return "I dag";
-
-        if($difference < 86400) return "I morgen";
-
-    }
-
-    $tense         = "siden";
-
-    for($j = 0; $difference >= $lengths[$j] && $j < count($lengths)-1; $j++) {
-        $difference /= $lengths[$j];
-    }
-
-    $difference = round($difference);
-
-    if($difference != 1) {
-        //$periods[$j].= "s";
-    }
-    $siden = ($siden)? " siden" : "";
-    return "$difference $periods[$j]{$siden}";
-}
-
-/* to get substring if exceed Limit */
-function getLimitedToken($string, $your_desired_width){
-    if(strlen($string)>$your_desired_width){
-        return tokenTruncate($string, $your_desired_width).'...';
-    }
-    else{
-        return $string;
-    }
-}
-
-ve
 /**
- * Check if the entred page is the page name wanted, i.e: isURL("index"); will return true if user is in index.
+ * Return true if we are in the page indicated
  * @param $filename
  * @return bool
  */
@@ -227,14 +221,20 @@ function isURL($filename){
     return $filename == str_replace(".php", "", substr(strrchr($_SERVER['PHP_SELF'],"/"), 1));
 }
 
-/* CURRENT PAGE SNIPPER
+/**
+ * Simplify using filters for INTEGERS
+ * @param $x
+ * @return mixed
+ */
+function FInt($x){
+    return filter_var($x, FILTER_SANITIZE_NUMBER_INT);
+}
 
-$CurrentPage = strrchr($_SERVER['PHP_SELF'],"/");
-
-    switch($CurrentPage){
-        case "/index.php": echo "Dashboard"; break;
-        case "/form_wizards.php": echo "Form wizards"; break;
-        Default: echo "Battle Social"; break;
-    }
-
-*/
+/**
+ * Simplify using filters for STRINGS
+ * @param $x
+ * @return mixed
+ */
+function FStr($x){
+    return filter_var($x, FILTER_SANITIZE_SPECIAL_CHARS);
+}
