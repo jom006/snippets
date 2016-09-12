@@ -238,3 +238,26 @@ function FInt($x){
 function FStr($x){
     return filter_var($x, FILTER_SANITIZE_SPECIAL_CHARS);
 }
+
+/**
+ * UPLOADING IMAGES
+ * NEEDS THIS CLASS : https://github.com/verot/class.upload.php
+ */
+$Upload = new upload($_FILES["bannerupload"]);
+if($Upload->uploaded){
+    $Upload->Process("../IMG/bannersystem/");
+    if ($Upload->processed) {
+
+        /**
+         * PUT MORE CODE HERE - HERE IS WHEN ALL GOES WELL
+         */
+        $FileName = $Upload->file_dst_name;
+        $Upload->clean();
+    } else {
+        echo 'error : ' . $Upload->error;
+    }
+}else{
+    echo 'error : ' . $Upload->error;
+    echo "<br><br>";
+    echo "LOG: ". $Upload->log;
+}
