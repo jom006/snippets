@@ -273,3 +273,14 @@ if($Upload->uploaded){
     echo "<br><br>";
     echo "LOG: ". $Upload->log;
 }
+
+
+//Danish months
+$danishMonths = array ( 1 => 'Januar', 2 => 'Februar', 3 => 'Marts', 4 => 'April',5 => 'Maj',6 => 'Juni',7 => 'Juli',8 => 'August',9 => 'September',10 => 'Oktober',11 => 'November',12 => 'December');
+$danishMonthsShort = array( 1 => 'Jan', 2 => 'Feb',3 => 'Mar',4 => 'Apr',5 => 'Maj',6 => 'Jun',7 => 'Jul',8 => 'Aug',9 => 'Sep',10 => 'Okt',11 => 'Nov',12 => 'Dec');
+//Danish days
+$danishDays = array('Søndag', 'Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag' );
+$danishDaysShort = array( 'Søn', 'Man', 'Tir', 'Ons', 'Tor','Fre', 'Lør' );
+//English months
+$englishMonths = array(1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December' );
+$englishMonthsShort = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
