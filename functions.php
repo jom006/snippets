@@ -83,7 +83,7 @@ function KeepLoginHash($email, $pass){
 	return hash('sha256', sha1($email.$pass.$GLOBALS["PassHash"]));
 }
 
-//SPLIT PHRASES
+//SPLIT PHRASES (excerpt)
 function tokenTruncate($string, $your_desired_width) {
   $parts = preg_split('/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE);
   $parts_count = count($parts);
@@ -104,6 +104,18 @@ function priceSep($num){
 	return "kr. ".number_format($num,null,null,".").",-";
 }
 
+//excerpt 2
+function shorten_text($string, $max_length = 140, $cut_off = '...')
+{
+  $string = strip_tags($string);
+  // truncate string
+  $stringCut = substr($string, 0, $max_length);
+  $endPoint = strrpos($stringCut, ' ');
+
+  //if the string doesn't contain any space then it will cut without word basis.
+  $string = $endPoint? substr($stringCut, 0, $endPoint) : substr($stringCut, 0);
+  return $string .= $cut_off = '...';
+}
 
 function ago($time, $siden=true, $removeTime=false, $reverse=false, $switch = 172800, $morgen=false){
    $periods = array("sekunder", "minutter", "timer", "dage", "uger", "måneder", "år", "årtier");
